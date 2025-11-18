@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Optic Boutique — Products</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg1: #071029;
+    --accent: linear-gradient(90deg,#ff8a64,#ff5a8a);
+    --muted: #a7b0bf;
+    --glass-border: rgba(255,255,255,0.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:Inter, Poppins; background:var(--bg1); color:#e6eef8}
+  header{position:sticky; top:0; padding:12px 22px; display:flex; gap:18px; align-items:center; backdrop-filter:blur(8px); background:rgba(255,255,255,0.02); border-bottom:1px solid var(--glass-border)}
+  .logo{display:flex;align-items:center; gap:10px}
+  nav{margin-left:auto; display:flex; gap:12px}
+  nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:10px}
+  .container{max-width:1200px;margin:28px auto;padding:0 18px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px}
+  .product{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:14px;border-radius:12px;border:1px solid var(--glass-border); transition:transform .22s, box-shadow .22s}
+  .product:hover{transform:translateY(-8px); box-shadow:0 16px 40px rgba(2,6,23,0.8)}
+  .imgwrap{height:220px; overflow:hidden; border-radius:10px}
+  .imgwrap img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .45s}
+  .imgwrap img:hover{transform:scale(1.03)}
+  h3{margin:10px 0 6px; font-size:1.05rem}
+  .price{font-weight:700}
+  .actions{display:flex; gap:10px; margin-top:10px}
+  .btn{padding:10px 14px; border-radius:10px; border:0; cursor:pointer; font-weight:700}
+  .btn.buy{background:var(--accent); color:white}
+  .btn.details{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+  .tag{display:inline-block; font-size:12px; color:var(--muted); margin-top:6px}
+  .empty{color:var(--muted); text-align:center; padding:40px}
+
+  /* small utilities */
+  .row{display:flex; gap:12px; align-items:center}
+  @media (max-width:720px){
+    .imgwrap{height:160px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html" style="color:inherit;text-decoration:none">
+    <svg width="36" height="36" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="14" width="60" height="34" rx="8" fill="rgba(255,255,255,0.04)"/><path d="M12 33c6-8 18-8 24 0" stroke="#ff8a64" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="30" r="5" stroke="#ff8a64" stroke-width="2.6"/><circle cx="38" cy="30" r="5" stroke="#ff8a64" stroke-width="2.6"/></svg>
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="cart.html">Cart</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px">
+    <div>
+      <h1 style="margin:0">Sunglasses Collection</h1>
+      <div class="tag">Filtered: All • 6 products</div>
+    </div>
+    <div class="row">
+      <input id="search" placeholder="Search..." style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit">
+      <button onclick="goCart()" class="btn details">View Cart</button>
+    </div>
+  </div>
+
+  <div id="grid" class="grid" aria-live="polite"></div>
+  <div id="empty" class="empty" style="display:none">No products found.</div>
+</main>
+
+<script>
+  // Product dataset (ids used by product.html)
+  const PRODUCTS = [
+    {id: 'p1', title:'Classic Aviator', price:999, img:'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTYGMdk_rAkKLWUaAr73XurvFDJE7QnXKRVd1MPILOZvUCsDg5eH1lYrN-Zd-isqjKTjijzYRJeRdvlodn3M_mNWtKNYFDaIZEyay1cttwkfehQRnfyUjHmV5Y', tag:'Timeless'},
+    {id: 'p2', title:'Retro Round', price:1299, img:'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSfq8IcIws068aybKHydksDHANwn5g6AmY1ZgBUm6Ow9KHM1jqn4k0YAo3YfQAfDvnav4ayfp5aiwoFOyiC72sjOJesFusCXkej85Tu-gEtYZyCX8T-_Mvkx2k', tag:'Vintage'},
+    {id: 'p3', title:'Sporty Wrap', price:1499, img:'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ7lPOljsn-KQjj-sO_Edhb-9M-ZFSzndFW3QZebtEir6j0MTCVr2_kxCV3VxPIuB4Mi7vNbigRZYIP9CO7XWUREV417f57vDYoXYb39gs', tag:'Active'},
+    {id: 'p4', title:'Cat-Eye Elegant', price:1099, img:'https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcR4uNUD03D0UigDoA0XzK80LbPATMkYdnBzy_Wm44XTT11EUpbCmC1l9uus9iIEI9kQXw63Vh2GpVrlg8iFV9ohn4w3GrJKdBLzh-PVYCZhpHSOLlpUl_mGEg', tag:'Chic'},
+    // A couple of Pexels extras
+    {id: 'p5', title:'Polarized Classic', price:1399, img:'https://images.pexels.com/photos/1499477/pexels-photo-1499477.jpeg', tag:'Polarized'},
+    {id: 'p6', title:'Modern Square', price:1199, img:'https://images.pexels.com/photos/1043473/pexels-photo-1043473.jpeg', tag:'Modern'}
+  ];
+
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+
+  function renderProducts(list){
+    grid.innerHTML = '';
+    if(list.length===0){ empty.style.display='block'; return } else { empty.style.display='none' }
+    list.forEach(p=>{
+      const div = document.createElement('div'); div.className='product';
+      div.innerHTML = `
+        <div class="imgwrap"><img loading="lazy" src="${p.img}" alt="${p.title}"></div>
+        <h3>${p.title}</h3>
+        <div class="row"><div class="price">₹${p.price.toFixed(2)}</div><div style="margin-left:auto;color:var(--muted)">${p.tag}</div></div>
+        <div class="actions">
+          <button class="btn buy" data-id="${p.id}">Add to Cart</button>
+          <button class="btn details" onclick="goDetails('${p.id}')">Details</button>
+        </div>`;
+      grid.appendChild(div);
+    });
+
+    // attach add-to-cart handlers
+    document.querySelectorAll('.btn.buy').forEach(b=>{
+      b.addEventListener('click', ()=> {
+        const id = b.getAttribute('data-id');
+        addToCart(id,1);
+        b.textContent = 'Added ✓';
+        setTimeout(()=> b.textContent='Add to Cart',900);
+      })
+    })
+  }
+
+  // Search
+  document.getElementById('search').addEventListener('input', (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    const filtered = PRODUCTS.filter(p=> p.title.toLowerCase().includes(q) || p.tag.toLowerCase().includes(q));
+    renderProducts(filtered);
+  });
+
+  // initial render
+  renderProducts(PRODUCTS);
+
+  // cart functions
+  function getCart(){ return JSON.parse(localStorage.getItem('ob_cart')||'[]') }
+  function setCart(c){ localStorage.setItem('ob_cart', JSON.stringify(c)); window.dispatchEvent(new Event('storage')) }
+
+  function addToCart(id, qty=1){
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
+    const cart = getCart();
+    const found = cart.find(i=>i.id===id);
+    if(found) found.qty += qty; else cart.push({id:p.id, title:p.title, price:p.price, img:p.img, qty});
+    setCart(cart);
+  }
+
+  function goDetails(id){ location.href = `product.html?id=${id}` }
+  function goCart(){ location.href = 'cart.html' }
+</script>
+</body>
+</html>
