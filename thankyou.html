@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Thank You — Optic Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+ :root{ --bg:#071226; --muted:#a9b4c4; --accent:linear-gradient(90deg,#ff8a64,#ff5a8a) }
+ *{box-sizing:border-box} body{margin:0;font-family:Inter,Poppins;background:var(--bg);color:#eaf1fb;display:flex;align-items:center;justify-content:center;height:100vh}
+ .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:36px;border-radius:16px;text-align:center;border:1px solid rgba(255,255,255,0.04);max-width:720px; width:92%}
+ .tick{width:96px;height:96px;border-radius:999px;background:linear-gradient(90deg,#46e6a8,#36b2ff);display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 14px 40px rgba(2,6,23,0.6)}
+ .btn{padding:12px 18px;border-radius:12px;border:0;cursor:pointer;font-weight:700;background:linear-gradient(90deg,#ff8a64,#ff5a8a); color:white}
+ .note{color:var(--muted); margin-top:8px}
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="tick" id="tick">
+      <svg width="46" height="36" viewBox="0 0 46 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 18L17 33L44 2" stroke="#052a4a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1 id="title">Thank you for your order!</h1>
+    <p id="summary" class="note">We emailed order details to you. Order ID: <strong id="orderId"></strong></p>
+    <div style="margin-top:22px">
+      <a href="index.html" class="btn">Back to Home</a>
+    </div>
+  </div>
+
+<script>
+  // play a tiny confetti using canvas simple approach
+  (function(){
+    const order = JSON.parse(localStorage.getItem('ob_last_order')||'null');
+    const title = document.getElementById('title');
+    const orderId = document.getElementById('orderId');
+    if(order){
+      title.textContent = `Thanks, ${order.name || 'Friend'} — Your order is confirmed!`;
+      orderId.textContent = order.id;
+      // we'll show a short confetti animation element-by-element
+      const colors = ['#ff8a64','#ff5a8a','#36b2ff','#ffd36b','#46e6a8'];
+      const card = document.getElementById('card');
+      for(let i=0;i<18;i++){
+        const el = document.createElement('div');
+        el.style.position='absolute';
+        el.style.width='8px'; el.style.height='12px';
+        el.style.left = (50 + (Math.random()*60-30)) + '%';
+        el.style.top = (10 + Math.random()*20) + '%';
+        el.style.background = colors[Math.floor(Math.random()*colors.length)];
+        el.style.transform = `translateY(-30px) rotate(${Math.random()*360}deg)`;
+        el.style.opacity = 0.95;
+        el.style.borderRadius = '2px';
+        el.style.zIndex = 80;
+        card.appendChild(el);
+        // animate
+        setTimeout(()=> {
+          el.style.transition = 'transform 1200ms cubic-bezier(.2,.8,.3,1), opacity 1000ms';
+          el.style.transform = `translateY(${220 + Math.random()*140}px) rotate(${Math.random()*720}deg) translateX(${Math.random()*80-40}px)`;
+          el.style.opacity = 0;
+        }, 20 + i*30);
+        // cleanup
+        setTimeout(()=> el.remove(), 1500 + i*30);
+      }
+      // clear last order after showing
+      setTimeout(()=> localStorage.removeItem('ob_last_order'), 1400);
+    } else {
+      title.textContent = 'Thank you!';
+      document.getElementById('summary').textContent = 'Your order is confirmed.';
+    }
+  })();
+</script>
+</body>
+</html>
