@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Optic Boutique — Home</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg1: #0f1724;            /* deep navy */
+    --accent: linear-gradient(90deg,#ff7f50,#ff5a8a);
+    --glass: rgba(255,255,255,0.06);
+    --muted: #a7b0bf;
+    --card: rgba(255,255,255,0.03);
+    --glass-border: rgba(255,255,255,0.08);
+    --glass-blur: 10px;
+  }
+
+  /* Page reset */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, Poppins, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{background: radial-gradient(1200px 600px at 10% 10%, rgba(255,122,100,0.06), transparent 8%),
+               radial-gradient(900px 400px at 90% 90%, rgba(95,60,255,0.04), transparent 12%),
+               var(--bg1); color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+
+  /* header / nav */
+  header{
+    position:sticky; top:0; z-index:50; padding:12px 28px; display:flex; align-items:center; gap:20px;
+    backdrop-filter: blur(var(--glass-blur)); background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .logo {display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit;}
+  .logo svg{width:44px;height:44px}
+  .brand {font-weight:700; font-family:Poppins; letter-spacing:0.6px;}
+  nav{margin-left:auto; display:flex; gap:18px; align-items:center;}
+  nav a{color:var(--muted); text-decoration:none; font-weight:600; padding:8px 12px; border-radius:10px; transition:all .18s}
+  nav a:hover{color:white; background:rgba(255,255,255,0.03)}
+  .cart-btn{position:relative}
+  .cart-count{position:absolute; top:-6px; right:-6px; background:#ff5a8a; width:20px;height:20px;border-radius:999px; display:flex;align-items:center;justify-content:center;font-size:12px;color:white;font-weight:700}
+
+  /* hero */
+  .hero{min-height:72vh; display:grid; grid-template-columns: repeat(2,1fr); gap:28px; align-items:center; padding:48px;}
+  .hero-left{max-width:640px; padding:20px}
+  .eyebrow{display:inline-block;background:linear-gradient(90deg,#ffd6bf,#ffd0e8); color:#462d20; padding:6px 12px;border-radius:999px;font-weight:700;margin-bottom:18px}
+  h1{font-size:clamp(28px,4.2vw,48px); margin:0 0 18px 0; line-height:1.02; font-family:Poppins;}
+  p.lead{color:var(--muted); font-size:1.06rem; margin-bottom:22px}
+  .hero-cta{display:flex; gap:14px}
+  .btn{
+    padding:12px 20px; border-radius:12px; border:0; cursor:pointer; font-weight:700; font-family:Poppins;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35); transition:transform .18s, box-shadow .18s;
+    background: linear-gradient(90deg,#ff8a64,#ff5a8a);
+    color:white;
+  }
+  .btn.secondary{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
+  .btn:active{transform:translateY(1px)}
+
+  /* hero-right images grid */
+  .mosaic{display:grid; grid-template-columns: repeat(2,1fr); gap:12px; padding:12px}
+  .mosaic img{width:100%; height:220px; object-fit:cover; border-radius:14px; display:block; box-shadow:0 8px 30px rgba(2,6,23,0.6); transition:transform .45s ease, opacity .45s;}
+  .mosaic img:hover{transform:translateY(-6px) scale(1.02); opacity:0.98}
+
+  /* features */
+  .features{padding:36px 48px; display:grid; grid-template-columns: repeat(3,1fr); gap:20px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px; padding:18px; border:1px solid var(--glass-border); transition:transform .22s, box-shadow .22s}
+  .card:hover{transform:translateY(-8px); box-shadow: 0 20px 40px rgba(2,6,23,0.7)}
+  .card h3{margin:10px 0 6px; font-size:1.05rem}
+  .card p{color:var(--muted); font-size:0.95rem; margin:0}
+
+  /* footer */
+  footer{padding:34px 48px; color:var(--muted); border-top:1px solid var(--glass-border); margin-top:36px}
+
+  /* responsive */
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr; padding:28px}
+    .mosaic img{height:160px}
+    .features{grid-template-columns:1fr}
+    nav{display:none}
+  }
+
+  /* subtle animations: fade-in on load */
+  .fade-in{opacity:0; transform:translateY(8px); animation:fadeInUp .7s forwards}
+  @keyframes fadeInUp{to{opacity:1; transform:none}}
+</style>
+</head>
+<body>
+
+<header class="fade-in">
+  <a class="logo" href="index.html" aria-label="Optic Boutique home">
+    <!-- Logo SVG -->
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1">
+          <stop offset="0" stop-color="#ff8a64"/>
+          <stop offset="1" stop-color="#ff5a8a"/>
+        </linearGradient>
+      </defs>
+      <rect x="2" y="14" width="60" height="34" rx="8" fill="rgba(255,255,255,0.06)"/>
+      <path d="M12 33c6-8 18-8 24 0" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="22" cy="30" r="5" stroke="url(#g)" stroke-width="2.6"/>
+      <circle cx="38" cy="30" r="5" stroke="url(#g)" stroke-width="2.6"/>
+    </svg>
+    <div>
+      <div class="brand">Optic Boutique</div>
+      <div style="font-size:12px;color:var(--muted)">Premium Sunglasses</div>
+    </div>
+  </a>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a class="cart-btn" href="cart.html" aria-label="cart">
+      Cart
+      <span id="cartCount" class="cart-count" style="display:none">0</span>
+    </a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" aria-label="main hero">
+    <div class="hero-left fade-in" style="animation-delay:.05s">
+      <span class="eyebrow">New arrivals • Summer 2025</span>
+      <h1>Shades that fit your life — Crafted, Comfortable, Confident.</h1>
+      <p class="lead">Lightweight frames, polarized lenses, and timeless silhouettes. Explore our curated collection for every mood and moment.</p>
+      <div class="hero-cta">
+        <a href="products.html" class="btn">Shop Collection</a>
+        <a href="#how" class="btn secondary">Why Optic Boutique</a>
+      </div>
+    </div>
+
+    <div class="hero-right fade-in" style="animation-delay:.12s">
+      <div class="mosaic">
+        <img src="https://images.pexels.com/photos/46710/pexels-photo-46710.jpeg" alt="model wearing sunglasses">
+        <img src="https://images.pexels.com/photos/343720/pexels-photo-343720.jpeg" alt="styled sunglasses">
+        <img src="https://images.pexels.com/photos/1499477/pexels-photo-1499477.jpeg" alt="sunglasses closeup">
+        <img src="https://images.pexels.com/photos/1043473/pexels-photo-1043473.jpeg" alt="on-shelf sunglasses">
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="features fade-in" style="animation-delay:.2s">
+    <div class="card">
+      <strong>Premium Lenses</strong>
+      <h3>Polarized & UV400</h3>
+      <p>Reduce glare, protect your eyes with top-grade UV400 protection on all lenses.</p>
+    </div>
+    <div class="card">
+      <strong>Comfort First</strong>
+      <h3>Featherweight Frames</h3>
+      <p>Ergonomic fits designed for all-day comfort — perfect for travel and daily wear.</p>
+    </div>
+    <div class="card">
+      <strong>Hassle-Free</strong>
+      <h3>30-Day Returns</h3>
+      <p>Try them at home — if they’re not right, return within 30 days for a full refund.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+    <div>
+      <strong>Optic Boutique</strong><div style="color:var(--muted); font-size:13px">© <span id="year"></span> All rights reserved.</div>
+    </div>
+    <div style="color:var(--muted); font-size:13px">Designed with care • Smooth animations • Brand kit included</div>
+  </div>
+</footer>
+
+<script>
+  // Brand kit & dynamic year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Cart counter UI
+  function refreshCartCount(){
+    const cart = JSON.parse(localStorage.getItem('ob_cart') || '[]');
+    const totalQty = cart.reduce((s,i)=>s+(i.qty||1),0);
+    const el = document.getElementById('cartCount');
+    if(totalQty>0){ el.style.display='flex'; el.textContent = totalQty } else { el.style.display='none' }
+  }
+  refreshCartCount();
+
+  // Fade-in small stagger (already CSS does initial)
+  window.addEventListener('storage', refreshCartCount);
+</script>
+</body>
+</html>
