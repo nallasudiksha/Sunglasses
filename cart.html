@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cart — Optic Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+ :root{ --bg:#071226; --muted:#a9b4c4; --accent:linear-gradient(90deg,#ff8a64,#ff5a8a); --glass-border: rgba(255,255,255,0.05) }
+ *{box-sizing:border-box} body{margin:0;font-family:Inter,Poppins;background:var(--bg);color:#eaf1fb}
+ header{position:sticky;top:0;padding:12px 20px;display:flex;gap:16px;align-items:center;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--glass-border)}
+ .container{max-width:1100px;margin:26px auto;padding:0 18px}
+ .cart-grid{display:grid; grid-template-columns: 1fr 360px; gap:28px; align-items:start}
+ .list{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent); padding:16px; border-radius:12px; border:1px solid var(--glass-border)}
+ .item{display:flex; gap:12px; padding:12px 10px; border-bottom:1px dashed rgba(255,255,255,0.03); align-items:center}
+ .item:last-child{border-bottom:none}
+ .item img{width:90px;height:70px;object-fit:cover;border-radius:8px}
+ .meta h4{margin:0 0 6px 0}
+ .qty{display:flex; gap:8px; align-items:center}
+ .qty input{width:68px;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+ .remove{background:transparent;border:0;color:#ff7f7f;cursor:pointer}
+ .summary{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent); padding:18px;border-radius:12px;border:1px solid var(--glass-border)}
+ .total{font-size:1.3rem;font-weight:800;margin-bottom:10px}
+ .btn{padding:12px;border-radius:12px;border:0;cursor:pointer;font-weight:700}
+ .btn.checkout{background:linear-gradient(90deg,#ff8a64,#ff5a8a); color:white; width:100%}
+ .empty{color:var(--muted); padding:40px; text-align:center}
+ @media (max-width:900px){ .cart-grid{grid-template-columns:1fr} .summary{position:static} }
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html" style="color:inherit;text-decoration:none;font-weight:700">Optic Boutique</a>
+  <nav style="margin-left:auto"><a href="products.html">Products</a> <a href="cart.html" style="margin-left:12px">Cart</a></nav>
+</header>
+
+<main class="container">
+  <div class="cart-grid">
+    <section class="list" id="list">
+      <h2 style="margin-top:0">Shopping Cart</h2>
+      <div id="items"></div>
+      <div id="empty" class="empty" style="display:none">Your cart is empty. <a href="products.html">Shop now</a></div>
+    </section>
+
+    <aside class="summary">
+      <div style="display:flex;justify-content:space-between;align-items:center"><div style="color:var(--muted)">Order Summary</div><div id="count" style="font-weight:800"></div></div>
+      <div style="margin-top:12px" id="breakdown"></div>
+      <div class="total" id="total">₹0.00</div>
+      <button id="checkout" class="btn checkout">Proceed to Payment</button>
+    </aside>
+  </div>
+</main>
+
+<script>
+  function getCart(){ return JSON.parse(localStorage.getItem('ob_cart')||'[]') }
+  function setCart(c){ localStorage.setItem('ob_cart', JSON.stringify(c)); window.dispatchEvent(new Event('storage')); render() }
+
+  function render(){
+    const cart = getCart();
+    const itemsEl = document.getElementById('items');
+    const emptyEl = document.getElementById('empty');
+    const countEl = document.getElementById('count');
+    const breakdown = document.getElementById('breakdown');
+    const totalEl = document.getElementById('total');
+
+    if(cart.length===0){ itemsEl.innerHTML=''; emptyEl.style.display='block'; countEl.textContent='0 items'; breakdown.innerHTML=''; totalEl.textContent='₹0.00'; return }
+    emptyEl.style.display='none';
+    itemsEl.innerHTML = '';
+    let subtotal = 0;
+    cart.forEach((it, idx)=>{
+      subtotal += it.price * it.qty;
+      const div = document.createElement('div'); div.className='item';
+      div.innerHTML = `<img src="${it.img}" alt="${it.title}">
+        <div style="flex:1">
+          <div class="meta"><h4>${it.title}</h4><div style="color:var(--muted)">₹${it.price.toFixed(2)}</div></div>
+        </div>
+        <div style="text-align:right">
+          <div class="qty">
+            <input type="number" min="1" value="${it.qty}" data-idx="${idx}">
+            <button class="remove" data-idx="${idx}">Remove</button>
+          </div>
+          <div style="color:var(--muted);margin-top:8px">Item total: ₹${(it.price*it.qty).toFixed(2)}</div>
+        </div>`;
+      itemsEl.appendChild(div);
+    });
+
+    countEl.textContent = `${cart.reduce((s,i)=>s+i.qty,0)} items`;
+    breakdown.innerHTML = `<div style="color:var(--muted)">Subtotal</div><div>₹${subtotal.toFixed(2)}</div>`;
+    const shipping = subtotal > 1999 ? 0 : 99;
+    breakdown.innerHTML += `<div style="display:flex;justify-content:space-between;margin-top:8px;color:var(--muted)"><div>Shipping</div><div>₹${shipping}</div></div>`;
+    const total = subtotal + shipping;
+    totalEl.textContent = '₹' + total.toFixed(2);
+
+    // attach handlers
+    document.querySelectorAll('.qty input').forEach(inp=>{
+      inp.addEventListener('change', ()=>{
+        const i = parseInt(inp.value) || 1; const idx = parseInt(inp.dataset.idx);
+        const cart = getCart(); cart[idx].qty = Math.max(1, i); setCart(cart);
+      })
+    });
+    document.querySelectorAll('.remove').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const idx = parseInt(btn.dataset.idx);
+        let cart = getCart(); cart.splice(idx,1); setCart(cart);
+      })
+    });
+  }
+
+  document.getElementById('checkout').addEventListener('click', ()=>{
+    const cart = getCart();
+    if(cart.length===0){ alert('Your cart is empty'); return; }
+    // compute total and forward to payment page (we'll store cart and total in localStorage)
+    location.href = 'payment.html';
+  });
+
+  // initialize demo: if no cart, could keep empty
+  render();
+</script>
+</body>
+</html>
